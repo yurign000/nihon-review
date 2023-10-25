@@ -1,0 +1,913 @@
+/* @keyframes removeButton {
+    0%{
+        background-color: rgb(255, 255, 255);
+        width: 5%;
+    }
+    
+    100%{
+        background-color: rgb(255, 251, 0);
+        width: 100%;
+    }
+}
+.configuration{
+    position: fixed;
+    z-index: 10;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: none;
+}
+.configuration.dark{
+    filter: invert() hue-rotate(110deg) sepia(0%) brightness(100%)
+}
+.configuration.dark .black_grid{
+    opacity: 70%;
+}
+
+.configuration .black_grid{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: #000;
+    opacity: 50%;
+}
+.configuration > main{
+    position: absolute;
+    z-index: 11;
+    height: 100%;
+    background-image: url(../assets/configuration.png);
+    background-position: middle middle;
+    border: solid 1px;
+}
+.configuration main .body{
+    filter: hue-rotate(200deg);
+    height: 100%;
+}
+.configuration main .backward{
+    position: absolute;
+    bottom: 16%;
+    left: 33%;
+    height: 8%;
+    filter: drop-shadow(3px 3px #0000007c);
+    transition: 0.2s;
+    cursor: pointer;
+}
+.configuration main .forward{
+    transform: rotateY(180deg);
+    position: absolute;
+    bottom: 16%;
+    right: 33%;
+    height: 8%;
+    filter: drop-shadow(3px 3px #0000007c);
+    transition: 0.2s;
+    cursor: pointer;
+}
+.configuration main .forward:hover, .configuration main .backward:hover{
+    transform: translate(-4px);
+} 
+.configuration main .forward:hover{
+    transform: rotateY(180deg) translate(-4px);
+} 
+.configuration main .salvar{
+    position: absolute;
+    bottom: 24.5%;
+    left: 27%;
+    height: 7.3%;
+    filter: hue-rotate(170deg) drop-shadow(2px 3px #0000007c);
+    transition: 0.2s;
+    cursor: pointer;
+}
+.configuration main .cancelar{
+    position: absolute;
+    bottom: 24.5%;
+    right: 27.5%;
+    height: 7.3%;
+    filter: hue-rotate(170deg) drop-shadow(-2px 3px #0000007c);
+    transition: 0.2s;
+    cursor: pointer;
+}
+.configuration .cancelar:hover, .configuration .salvar:hover{
+    transform: translateY(-2px);
+}
+
+.configuration .som{
+    height: 8%;
+    width: 8%;
+    position: absolute;
+    top: 32.3%;
+    right: 35.5%;
+    z-index: 12;
+    font-size: 40px;
+    cursor: pointer;
+}
+.configuration .som img{
+    height: 70%;
+}
+.configuration.dark .som img{
+    filter: hue-rotate(190deg) saturate(300%) brightness(110%);
+}
+.configuration .som img:hover{
+    transform: scale(1.1);
+}
+.configuration section{
+    z-index: 15;
+    top: 43.7%;
+    left: 26.5%;
+    position: absolute;
+    width: 47%;
+    height: 23.5%;
+}
+.configuration section main{
+    box-sizing: border-box;
+    display: flex;
+    height: 100%;    
+    width: 100%;
+    overflow: hidden;
+}
+.configuration section main > div{
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    height: 100%;
+    width: 100%;
+}
+.configuration section main > div h3{
+    margin: 0;
+    text-align: center;
+    color: rgb(0, 94, 170);
+    letter-spacing: 1px;
+    height: 20%;
+    width: 100%;
+    font-size: 4vh;
+    text-shadow: 0 2px #fff;
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    text-decoration-thickness: 2px;
+    box-sizing: border-box;
+}
+.configuration section main > div article{
+    display: flex;
+    flex-direction: column;
+    height: 80%;
+    box-sizing: border-box;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.configuration section main > div article div input{
+    filter: hue-rotate(250deg);
+}
+.configuration section main > div article div label{
+    color: #0aa;
+    font-size: 3vh;
+}
+.configuration section main > div article div input{
+    z-index: 9;
+    position: relative;
+    transform: translate(-2px);
+    opacity: 0;
+    cursor: pointer;
+}
+input[type=checkbox]:checked + label:before {
+    content: "\2713";
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+    font-size: 2.2vh;
+    color: #fff;
+    text-align: center;
+    line-height: 12px;
+}
+.configuration section main article div label::before{
+    content: '';
+    position: absolute;
+    transform: translate(-19px, 3px);
+    height: 10.5%;
+    width: 5.25%;
+    background-color: rgb(111, 166, 228);
+    box-shadow: 0 0 5px inset #00723d;
+    border-radius: 5px;
+}
+.configuration .kanji-screen h3 span{
+    position: absolute;
+    margin-left: 5px;
+    font-size: 65%;
+    text-shadow: none;
+    color: rgb(226, 107, 28);
+    font-weight: 300;
+    z-index: 30;
+}
+.configuration .kanji-screen article{
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    box-sizing: border-box;
+    padding-top: 8px;
+    justify-content: start;
+    flex-basis: 0;
+    align-items: start;
+    width: max-content;
+    flex: 1;
+}   
+.configuration .kanji-screen label{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 25%;
+    color: #099;
+    width: calc(20% / 8);
+
+    cursor: pointer;
+}
+.configuration .kanji-screen label:hover{
+    color: #00d9ff;
+    transform: scale(1.1);
+}
+.configuration .kanji-screen .add-kanji{
+    display: flex;
+    justify-content: center;
+    height: 25%;
+    width: calc(294px / 8);
+}
+.configuration .kanji-screen .add-kanji span{
+    align-items: center;
+    background-color: rgb(0, 112, 204);
+    color: #fff;
+    line-height: 15.7px;
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    text-align: center;
+    border-radius: 5px;
+    transform: translateY(1px);
+    box-shadow: 1px 1px 2px #888;
+    cursor: pointer;
+}
+.configuration .add-kanji-menu{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+    background-color: rgb(0, 167, 179);
+    color: #fff;
+    z-index: 100;
+    box-shadow: 0 0 10px #000;
+    width: 100%;
+    border-radius: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    border: solid 5px;
+}
+.configuration .add-kanji-menu input{
+    position: relative;
+    border: none;
+    outline: none;
+    flex: 1;
+    margin-bottom: 20px;
+    font-size: 15px;
+    padding: 4px;
+}
+.configuration .add-kanji-menu p{
+    margin: 0;
+    margin-bottom: 4px;
+    color: #fff;
+}
+.configuration .add-kanji-menu div{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.configuration .add-kanji-menu div button{
+    width: 30%;
+    font-size: 20px;
+    border: none;
+    color: #fff;
+    background-color: rgb(255, 115, 0);
+    border: solid 3px rgb(139, 84, 0);
+    padding: 4px;
+    text-shadow: 0 0 4px #8f5100;
+    cursor: pointer;
+}
+.configuration .add-kanji-menu div button:hover{
+    transform: scale(1.05);
+}
+.configuration .alert-message{
+    margin: 10px 0;
+    color:rgb(255, 180, 41);
+    font-size: 15px;
+    text-align: center;
+}
+.configuration .alert-message::after{
+    content: '*';
+    color: rgb(255, 49, 49);
+}
+.configuration .alert-message::before{
+    content: '*';
+    color: rgb(255, 49, 49);
+}
+.configuration .h-k-alert-message{
+    position: absolute;
+    text-align: center;
+    left: 0;
+    bottom: 0;
+    color:rgb(226, 0, 0);
+    font-size: 11px;
+    width: 100%;
+}
+.configuration .h-k-alert-message::after{
+    content: '*';
+    color: rgb(255, 77, 77);
+}
+.configuration .h-k-alert-message::before{
+    content: '*';
+    color: rgb(255, 77, 77);
+}
+
+.configuration .removing-button:before{
+    position: absolute;
+    content: ' x';
+    color: transparent;
+    text-shadow: none;
+    animation-name: removeButton;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%);
+    height: 100%;
+    
+    animation-timing-function: linear;
+    animation-duration: 1.5s;
+    opacity: 60%;
+}
+.configuration.dark .add-kanji-menu button{
+    filter: hue-rotate(170deg);
+}
+
+.configuration .basic-screen{
+    display: flex;
+    flex-direction: column;
+    padding-top: 2vh;
+    gap: 1vh;
+}
+.configuration .basic-screen div{
+    display: flex;
+    height: 3vh;
+    font-size: 2.2vh;
+}
+.configuration .basic-screen div input{
+    height: 2.5vh;
+    width: 10%;
+    font-size: 2.4vh;
+    text-align: center;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    border-bottom: solid 1px #63b9ff;
+    color: #007c76;
+    margin: 0 5px;
+    transform: translateY(-1px);
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.configuration .basic-screen label{
+    color: rgb(0, 161, 161);
+}
+.configuration .basic-screen i{
+    margin-left: 5px;
+    color: rgb(0, 148, 158);
+    font-weight: 900;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.have-info{
+    cursor: help;
+}
+.configuration .export-screen{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+}
+.configuration .export-screen button{
+    width: 70%;
+    height: 25%;
+    border: none;
+    color: rgb(251, 253, 255);
+    background-color: rgb(22, 148, 197);
+    border: solid 3px rgb(0, 85, 100);
+    cursor: pointer;
+    font-size: 100%;
+    transition: 0.1s;
+    box-shadow: 0 1px 2px #444;
+    text-shadow: 1px 1px #000;
+    border-radius: 5px;
+}
+.configuration .export-screen input[type='file']{
+    display: none;
+}
+
+.configuration .export-screen button:hover{
+    background-color: rgb(16, 117, 156);
+} */
+@keyframes removeButton {
+    0%{
+        background-color: rgb(255, 255, 255);
+        width: 5%;
+    }
+    
+    100%{
+        background-color: rgb(255, 251, 0);
+        width: 100%;
+    }
+}
+:root {
+    --base-width: 600px; 
+    --screen-width: 360px;
+}
+
+.configuration{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 20;
+    filter: none;
+}
+.configuration.dark{
+    filter: invert() hue-rotate(110deg) sepia(0%) brightness(100%);
+}
+.configuration.dark .black_grid{
+    opacity: 70%;
+}
+.configuration .black_grid{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background-color: rgb(0, 0, 0);
+    width: 100%;
+    height: 100%;
+    opacity: 50%;
+}
+.configuration .body{
+    position: relative;
+    height: var(--base-width);
+    width: var(--base-width);
+    z-index: 11;
+    background-image: url(../assets/configuration.png);
+    background-size: 100% 100%;
+    transform: translateY(10px);
+}
+.configuration .salvar, 
+.configuration .cancelar,
+.configuration .sound-button,
+.configuration .backward,
+.configuration .forward{
+    position: absolute;
+    cursor: pointer;
+    z-index: 90;
+}
+.configuration .sound-button{
+    top: 27.4%;
+    left: 59.3%;
+    height: 6.5%;
+    width: max-content;
+}
+.configuration .sound-button img{
+    height: 100%;
+}
+.configuration .salvar{
+    height: 8%;
+    top: 65.4%;
+    left: 23%;
+    filter: hue-rotate(170deg) drop-shadow(2px 3px #0000007c);
+    transition: 0.2s;
+}
+.configuration .cancelar{
+    height: 8%;
+    top: 65.4%;
+    right: 23.7%;
+    filter: hue-rotate(170deg) drop-shadow(-2px 3px #0000007c);
+    transition: 0.2s;
+}
+.configuration .cancelar:hover, .configuration .salvar:hover{
+    transform: translateY(-2px);
+}
+.configuration .backward{
+    top: 73%;
+    left: 30%;
+    height: 9.5%;
+    filter: drop-shadow(3px 3px #0000007c);
+    transition: 0.2s;
+}
+.configuration .forward{
+    top: 73%;
+    right: 30%;
+    height: 9.5%;
+    transform: rotateY(180deg);
+    filter: drop-shadow(3px 3px #0000007c);
+    transition: 0.2s;
+}
+.configuration .backward:hover{
+    transform: translate(-4px);
+} 
+.configuration .forward:hover{
+    transform: rotateY(180deg) translate(-4px);
+} 
+.configuration .body > section{
+    position: absolute;
+    display: flex;
+    height: 26.5%;
+    width: var(--screen-width);
+    top: 38.5%;
+    left: 20%;
+    overflow: hidden;
+}
+.configuration .body .pages{
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 var(--screen-width);
+    height: 100%;
+}
+.configuration .pages > div{
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+.configuration .pages h3{
+    margin: 0;
+    text-align: center;
+    color: rgb(0, 94, 170);
+    letter-spacing: 1px;
+    height: 20%;
+    width: 100%;
+    font-size: calc(var(--base-width) / 25);
+    text-shadow: 0 2px #fff;
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    text-decoration-thickness: 2px;
+    box-sizing: border-box;
+}
+.configuration .basic-screen{
+    display: flex;
+    flex-direction: column;
+    padding-top: calc(var(--base-width) / 40);
+    gap: calc(var(--base-width) / 70);
+}
+.configuration .basic-screen div{
+    display: flex;
+    height: calc(var(--base-width) / 30);
+    font-size: calc(var(--base-width) / 38);
+    padding-left: 2%;
+}
+.configuration .basic-screen div input{
+    height: calc(var(--base-width) / 40);
+    width: 10%;
+    font-size: calc(var(--base-width) / 38);
+    text-align: center;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    border-bottom: solid 1px #63b9ff;
+    color: #007c76;
+    margin: 0 5px;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.configuration .basic-screen label{
+    color: rgb(0, 161, 161);
+}
+.configuration .basic-screen i{
+    margin-left: 5px;
+    color: rgb(0, 148, 158);
+    font-weight: 900;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.have-info{
+    cursor: help;
+}
+
+/* ------------------------------------------------------------- */
+/* HIRAGANA SCREEN */
+.configuration .pages article{
+    display: flex;
+    flex-direction: column;
+    height: 80%;
+    box-sizing: border-box;
+    width: 100%;
+    padding-left: 9px;
+    padding-top: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.configuration .pages article > div{
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    height: 25%;
+    width: 25%;
+}
+.configuration .pages article label{
+    color: #0aa;
+    font-size: calc(var(--base-width) / 33);
+}
+.configuration .pages article input{
+    z-index: 9;
+    position: absolute;
+    transform: translate(-23px, 2px) scale(1.3);
+    opacity: 0;
+    cursor: pointer;
+}
+.configuration input[type=checkbox]:checked + label::before{
+    content: "\2713";
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+    font-size: calc(var(--base-width) / 40);
+    color: #fff;
+    text-align: center;
+    line-height: calc(var(--base-width) / 35);
+}
+.configuration .pages article div label::before{
+    margin-left: calc(var(--base-width) * -1 / 120);
+    content: '';
+    position: absolute;
+    transform: translate(calc(var(--base-width) * -1 / 35), 3px);
+    height: 10.5%;
+    width: 5.25%;
+    background-color: rgb(111, 166, 228);
+    box-shadow: 0 0 5px inset #00723d;
+    border-radius: calc(var(--base-width) / 90);
+}
+
+.configuration .kanji-screen h3 span{
+    position: absolute;
+    margin-left: 5px;
+    font-size: calc(var(--base-width) / 50);
+    text-shadow: none;
+    color: rgb(226, 107, 28);
+    font-weight: 300;
+    z-index: 30;
+}
+.configuration .kanji-screen article{
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    box-sizing: border-box;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    justify-content: start;
+    flex-basis: 0;
+    width: var(--screen-width);
+    width: max-content;
+    padding-left: 0px;
+}   
+.configuration .kanji-screen label{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 25%;
+    color: #099;
+    width: calc(var(--screen-width) / 8);
+    cursor: pointer;
+}
+.configuration .kanji-screen label:hover{
+    color: #00d9ff;
+    transform: scale(1.1);
+}
+.configuration .kanji-screen .add-kanji span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(0, 112, 204);
+    color: #fff;
+    font-size: calc(var(--base-width) / 25);
+    height: 80%;
+    width: 50%;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 1px 1px 2px #888;
+    cursor: pointer;
+    padding-bottom: 15%;
+    box-sizing: border-box;
+}
+.configuration .add-kanji-menu{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+    background-color: rgb(0, 167, 179);
+    color: #fff;
+    z-index: 100;
+    box-shadow: 0 0 10px #000;
+    width: 45vw;
+    border-radius: 5%;
+    padding: 3%;
+    box-sizing: border-box;
+    border: solid calc(var(--base-width) / 100);
+}
+.configuration .add-kanji-menu input{
+    position: relative;
+    border: none;
+    outline: none;
+    flex: 1;
+    margin-bottom: 4%;
+    font-size: calc(var(--base-width) / 35);
+    padding: 0.8%;
+}
+.configuration .add-kanji-menu p{
+    margin: 0;
+    margin-bottom: 1%;
+    font-size: calc(var(--base-width) / 36);
+    color: #fff;
+}
+.configuration .add-kanji-menu div{
+    display: flex;
+    justify-content: center;
+    gap: 3%;
+}
+.configuration .add-kanji-menu div button{
+    width: 30%;
+    font-size: calc(var(--base-width)/ 30);
+    border: none;
+    color: #fff;
+    background-color: rgb(255, 115, 0);
+    border: solid calc(var(--base-width) / 160) rgb(139, 84, 0);
+    padding: 0.8%;
+    text-shadow: 0 0 4px #8f5100;
+    cursor: pointer;
+}
+.configuration .add-kanji-menu div button:hover{
+    transform: scale(1.05);
+}
+.configuration .export-screen{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+}
+.configuration .export-screen button{
+    width: 70%;
+    height: 25%;
+    border: none;
+    color: rgb(251, 253, 255);
+    background-color: rgb(22, 148, 197);
+    border: solid calc(var(--base-width) / 180) rgb(0, 85, 100);
+    cursor: pointer;
+    font-size: calc(var(--screen-width) / 20);
+    transition: 0.1s;
+    box-shadow: 0 1px 2px #444;
+    text-shadow: 1px 1px #000;
+    border-radius: 5px;
+}
+.configuration .export-screen input[type='file']{
+    display: none;
+}
+.configuration .export-screen button:hover{
+    background-color: rgb(16, 117, 156);
+}
+
+/* ------ */
+.configuration .alert-message{
+    margin: 10px 0;
+    color:rgb(255, 180, 41);
+    font-size: calc(var(--base-width) / 30);
+    text-align: center;
+}
+.configuration .alert-message::after{
+    content: '*';
+    color: rgb(255, 49, 49);
+}
+.configuration .alert-message::before{
+    content: '*';
+    color: rgb(255, 49, 49);
+}
+.configuration .h-k-alert-message{
+    position: absolute;
+    text-align: center;
+    left: 0;
+    bottom: 0;
+    color:rgb(226, 0, 0);
+    font-size: calc(var(--base-width) / 45);
+    width: 100%;
+}
+.configuration .h-k-alert-message::after{
+    content: '*';
+    color: rgb(255, 77, 77);
+}
+.configuration .h-k-alert-message::before{
+    content: '*';
+    color: rgb(255, 77, 77);
+}
+
+.configuration .removing-button:before{
+    position: absolute;
+    content: ' x';
+    color: transparent;
+    text-shadow: none;
+    animation-name: removeButton;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%);
+    height: 100%;
+    
+    animation-timing-function: linear;
+    animation-duration: 1.5s;
+    opacity: 60%;
+}
+.configuration.dark .add-kanji-menu button{
+    filter: hue-rotate(170deg);
+}
+
+/* RESOLUÇÃO MENOR QUE 600px */
+@media screen and (max-height: 600px) {
+    :root {
+        --base-width: 550px; 
+        --screen-width: 330px;
+    }
+}
+/* RESOLUÇÃO MENOR QUE 550px */
+@media screen and (max-height: 550px) {
+    :root {
+        --base-width: 500px; 
+        --screen-width: 300px;
+    }
+}
+/* RESOLUÇÃO MENOR QUE 500px */
+@media screen and (max-height: 500px) {
+    :root {
+        --base-width: 450px; 
+        --screen-width: 270px;
+    }
+}
+/* RESOLUÇÃO MENOR QUE 450px */
+@media screen and (max-height: 450px) {
+    :root {
+        --base-width: 400px; 
+        --screen-width: 240px;
+    }
+}
+/* RESOLUÇÃO MENOR QUE 400px */
+@media screen and (max-height: 400px) {
+    :root {
+        --base-width: 350px; 
+        --screen-width: 210px;
+    }
+}
+/* RESOLUÇÃO MENOR QUE 350px */
+@media screen and (max-height: 350px) {
+    :root {
+        --base-width: 300px; 
+        --screen-width: 180px;
+    }
+}
+/* RESOLUÇÃO MENOR QUE 300px */
+@media screen and (max-height: 300px) {
+    :root {
+        --base-width: 250px; 
+        --screen-width: 150px;
+    }
+}
+/* 
+@media only screen and (max-width: 767px) {
+    @media only screen and (orientation: landscape) {
+        .configuration .pages article div label::before{
+            margin-left: 0px;
+            transform: translate(-12px, 3px);
+            border-radius: 3px;
+        }
+        .configuration .pages article input{
+            z-index: 9;
+            position: absolute;
+            transform: translate(-23px, 2px) scale(0.8);
+            opacity: 100;
+            cursor: pointer;
+        }
+        .configuration .pages article label{
+            color: #0aa;
+            font-size: calc(var(--base-width) / 40);
+        }
+
+    }
+} */
+  
+  
+  
+  

@@ -1,0 +1,59 @@
+.study-screen{
+    height: 100%;
+}
+.study-screen article{
+    flex-direction: column;
+    align-items: start;
+    position: absolute;
+    padding: 2vh 3vw;
+    bottom: 0;
+    right: 0;
+    width: 20vw;
+    background-color: #0000005b;
+}
+.study-screen article span{
+    letter-spacing: 0.5px;
+    color: #fff;
+    margin: 5px;
+    font-size: 1.5vw;
+}
+.study-screen article div{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.study-screen section{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+.study-screen section div{
+    height: 40%;
+}
+.study-screen section div{
+    display: flex;
+    flex-direction: column;
+}
+.study-screen section label{
+    font-size: 6.5vw;
+    text-align: center;
+}
+.study-screen section .details{
+    font-size: 120%;
+} 
+.study-screen hr{
+    height: 10px;
+    background-color: #000000;
+    border: none;
+    width: 30%;
+}
+.study-screen .refresh{
+    height: 35%;
+    transition: 0.3s;
+    filter: brightness(0%) drop-shadow(0 2px 3px #888);
+    cursor: pointer;
+}
+.study-screen .refresh:hover{
+    transform: scale(1.05) rotate(5deg);
+}
