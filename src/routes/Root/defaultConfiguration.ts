@@ -7,11 +7,11 @@ export const defaultConfiguration: object = {
     questions_at_a_time: 3,   //QUESTÕES POR TESTE
 
     hiragana: {
-        sets_to_show: ['group a', 'group ha', 'group ta', 'group ka'] //QUAIS TIPOS DE GRUPOS MOSTRAR
+        sets_to_show: ['group a'] //QUAIS TIPOS DE GRUPOS MOSTRAR
     },
     
     katakana: {
-        sets_to_show: ['group a', 'group ha', 'group ta', 'group ka']
+        sets_to_show: ['group a']
     },
     
     kanji: {

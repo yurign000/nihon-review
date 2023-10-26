@@ -12,7 +12,9 @@ export default function Root(){
     const [changeTheme, setChangeTheme]: [boolean, any] = useState(false);
     const [changedURL, setChangedURL]: [boolean, any] = useState(false);
     const [showConfiguration, setShowConfiguration]: [boolean, any] = useState(false);
-    const [isPortraitScreen, setIsPortraitScreen]: [boolean, any] = useState(false);
+    const [isOnMobile, setIsOnMobile]: [boolean, any] = useState(false);
+    const [isFullScreen, setIsFullScreen]: [boolean, any] = useState(false);
+
     
     var changedUrlTrue: boolean = false;
     var configuration: any = JSON.parse(localStorage.configuration || JSON.stringify(defaultConfiguration));
@@ -27,19 +29,42 @@ export default function Root(){
         
     },[changeTheme])
 
+    //GERENCIAR LAYOUT PARA CELULAR
     useEffect(() => {
-        window.addEventListener('orientationchange', onRotatePhoneDevice)
-        
-        onRotatePhoneDevice();
-        
-    }, [])
-    const onRotatePhoneDevice = () => {
-        if(screen.orientation.type == 'portrait-primary'){
-            setIsPortraitScreen(true);
+        // VERIFICAR SE O DISPOSITIVO É UM CELULAR
+        if(navigator.maxTouchPoints > 0){
+            setIsOnMobile(true);
+
+            document.body.classList.add("mobile");
+            document.addEventListener('fullscreenchange', onExitFullScreenByReturnButton, false)
         }
-        else setIsPortraitScreen(false);
+
+    }, [])
+    function onExitFullScreenByReturnButton() {
+        if(document.fullscreenElement == null){
+            setIsFullScreen(false);
+        } 
+
     }
-    
+    const enterFullScreen = async () => {
+        let body: any = document.body;
+        let orientation: any = screen.orientation;
+
+        body.requestFullscreen();
+        await orientation.lock('landscape');
+        setIsFullScreen(true);
+    }
+
+    const exitFullScreen = async () => {
+        let body: any = document.body;
+        let orientation: any = screen.orientation;
+        
+        body.exitFullScreen();
+        await orientation.unlock();
+        setIsFullScreen(false);
+    }
+
+     
     //VERIFICAR SE A URL FOI ALTERADA
     useEffect(() => {
         if(!changedUrlTrue) cloudMove();
@@ -100,20 +125,37 @@ export default function Root(){
     }
     const getTheme = handleTheme();
 
+    const mobileAndNotFullscreenBlock = (): JSX.Element | undefined => {
+        if(!isOnMobile) return <></>
+
+        if(!isFullScreen) return (
+            <div 
+                className="portrait-screen-alert" 
+                onClick={() => enterFullScreen()}
+            >
+                <button>
+                    Abrir em Tela Cheia
+                </button>
+            </div>
+        )
+
+        else return <></>
+    }
+
     return(
         <div className="router" style={getTheme}>
-            {isPortraitScreen && <div className="portrait-screen-alert">Rotacione a Tela</div>}
+            {/* {mobileAndNotFullscreenBlock()} */}
 
             <a className="config" onClick={() => { setShowConfiguration(true); playSound('pause') }}>
                 <img src={config} alt="configuration" style={getTheme}/>
             </a>
 
-            {showConfiguration && <Configuration setShowConfiguration={setShowConfiguration}/>}
+            {showConfiguration && <Configuration setShowConfiguration={setShowConfiguration} setIsFullScreen={setIsFullScreen}/>}
 
             <img src={cloud} className='cloud c1' alt="" style={getTheme}/>
             <img src={cloud_inverted} className='cloud c2' alt="" style={getTheme}/>
 
-            <Outlet context={[changeTheme,setChangeTheme, setChangedURL]}/>
+            <Outlet context={[changeTheme,setChangeTheme, setChangedURL, isFullScreen, setIsFullScreen]}/>
         </div>
     )
 }

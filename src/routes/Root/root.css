@@ -90,15 +90,27 @@
     justify-content: center;
     top: 0;
     right: 0;
-    position: absolute;
+    position: fixed;
     height: 100%;
     width: 100%;
     background-color: #0065a8;
-    color: #fff;
     z-index: 200;
-    font-size: 10vw;
-    text-shadow: 0 2px 3px #444;
     box-sizing: border-box;
     border: solid 1vh #004777;
     opacity: 99%;
+}
+.portrait-screen-alert button{
+    border: none;
+    outline: none;
+    font-size: 8vw;
+    border: solid 1px;
+    border-radius: 5px;
+    padding: 10px;
+    color: #fff;
+    background-color: #0084db;
+    text-shadow: 0 2px 3px #444;
+}
+
+*{   
+    -webkit-tap-highlight-color: transparent;
 }

@@ -10,7 +10,11 @@ html, body, html, #root{
     margin: 0;
     padding: 0;
     height: 100%;
+    width: 100vw;
     overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 .flex{
     display: flex;

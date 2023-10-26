@@ -1,5 +1,4 @@
 import './configuration.css'
-// import configuration_img from '../assets/configuration.png';
 import return_img from '../assets/return.png';
 import salvar from '../assets/salvar.png';
 import cancelar from '../assets/cancelar.png';
@@ -9,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { defaultConfiguration } from '../routes/Root/defaultConfiguration';
 import playSound from '../manageSounds';
 
-export default function Configuration({setShowConfiguration}: any): any{
+export default function Configuration({setShowConfiguration, setIsFullScreen}: any): any{
     const [kanjis, setKanjis]:               [string[], any] = useState([]);
     const [configuration, setConfiguration]: [any, any] = useState({});
     const [addingNewKaji, setAddingNewKaji]: [boolean, any] = useState(false);
@@ -54,15 +53,20 @@ export default function Configuration({setShowConfiguration}: any): any{
     }
     useEffect(() => {
         if(!changedSound) return
-
+        
         playSound('click2')
     }, [changedSound])
     // NAVEGAR ENTRE AS PÁGINAS
     const alternateIntoOptions = (direction: number): void => {
         const screenOptions: any = document.querySelector('.configuration section');
         const screenWidth: number = screenOptions.scrollWidth / screenOptions.children.length
-
+        
         screenOptions.scrollLeft += screenWidth * direction;
+        
+        if(screenOptions.scrollLeft + 5 > screenOptions.scrollWidth - screenWidth){
+            screenOptions.scrollLeft = screenOptions.scrollWidth;
+        }
+
         playSound('click');
     }
     //CARREGAR KANJIS, VERIFICAR TEMA, HABILITAR CHECKBOXS
@@ -427,7 +431,29 @@ export default function Configuration({setShowConfiguration}: any): any{
         a.download = 'kanjis.txt';
 
         a.click();
+        setIsFullScreen(false);
+
+        setTimeout(() => {
+            let portraitAlert: any = document.querySelector('.portrait-screen-alert');
+            portraitAlert?.addEventListener('click', awaitExportingImportingKanjis);
+        }, 1000);
+
     }
+    const importKanjisClick = (target: any): void => {
+        target.children[0]?.click()
+        setIsFullScreen(false);
+        
+        setTimeout(() => {
+            let portraitAlert: any = document.querySelector('.portrait-screen-alert');
+            portraitAlert?.addEventListener('click', awaitExportingImportingKanjis);
+        }, 1000);
+    }
+    const awaitExportingImportingKanjis = (): void => {
+        setTimeout(() => {
+            alternateIntoOptions(1);
+        }, 100);
+    }
+
     const importKanjis = (target: any): void => {
         if (target.files.length > 0) {
             const file: any = target.files[0];
@@ -442,7 +468,7 @@ export default function Configuration({setShowConfiguration}: any): any{
 
             reader.readAsText(file);
         }
-        target.value = '';
+        target.value = '';   
     }
     const formateInputs = (value: any):string => {
         let formatedValue = Math.abs(value)
@@ -457,13 +483,13 @@ export default function Configuration({setShowConfiguration}: any): any{
             <div className='black_grid'></div>
             
             <main onMouseDown={() => setH_k_setAlertMsg('')} className='body'>
+                {h_k_alertMsg && <label className='h-k-alert-message'>{h_k_alertMsg}</label>}
                 
                 <div className='sound-button' onClick={({target}) => switchSound(target)}>
                     <img src={x_img} alt="sound button" />
                 </div>
 
                 <section>
-                    {h_k_alertMsg && <label className='h-k-alert-message'>{h_k_alertMsg}</label>}
                         <div className='geral-screen pages'>
                             <h3>Geral</h3>
                             <main className='basic-screen pages'>
@@ -659,7 +685,7 @@ export default function Configuration({setShowConfiguration}: any): any{
                                     Exportar Kanjis
                             </button>
                             <button 
-                                onClick={({target}: any) => target.children[0]?.click()}
+                                onClick={({target}: any) => importKanjisClick(target)}
                                 onMouseOver={() => playSound('click')}
                             >
                                 <input 
@@ -672,8 +698,11 @@ export default function Configuration({setShowConfiguration}: any): any{
                             <button 
                                 onMouseOver={() => playSound('click')}
                                 onMouseUp={({target}: any) => stopResetConfiguration(target)} 
+                                onTouchEnd={({target}: any) => stopResetConfiguration(target)} 
                                 onMouseLeave={({target}: any) => stopResetConfiguration(target)} 
+                                onTouchMove={({target}: any) => stopResetConfiguration(target)} 
                                 onMouseDown={({target}: any) => resetConfiguration(target)}
+                                onTouchStart={({target}: any) => resetConfiguration(target)}
                                 onContextMenu={(e: any) => e.preventDefault()}
                             >Resetar Tudo</button>
                         </div>
@@ -773,8 +802,11 @@ export default function Configuration({setShowConfiguration}: any): any{
                             <button 
                                 className='remove-button'
                                 onMouseUp={() => stopRemovingKanji()} 
+                                onTouchEnd={() => stopRemovingKanji()} 
                                 onMouseLeave={() => stopRemovingKanji()} 
+                                onTouchMove={() => stopRemovingKanji()} 
                                 onMouseDown={() => removeKanji()}
+                                onTouchStart={() => removeKanji()}
                             >REMOVER</button>
                             
                         </div>                   
