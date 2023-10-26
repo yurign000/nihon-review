@@ -2,8 +2,6 @@ import './configuration.css'
 import return_img from '../assets/return.png';
 import salvar from '../assets/salvar.png';
 import cancelar from '../assets/cancelar.png';
-import x_img from '../assets/x.png';
-import ok_img from '../assets/ok.png';
 import { useEffect, useState } from 'react';
 import { defaultConfiguration } from '../routes/Root/defaultConfiguration';
 import playSound from '../manageSounds';
@@ -36,15 +34,15 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
     const switchSound = (target: any): void => {
         let configurationSound: any = JSON.parse(localStorage.configuration);
 
-        if(target.src?.endsWith('x.png')){
+        if(target.src?.endsWith('sound-disabled.png')){
             setSoundEnabled(true);
-            target.src = ok_img;
+            target.src = '/sound-enabled.png';
             configurationSound.sound_enabled = true
             setChangedSound(true)
         }
         else{
             setSoundEnabled(false);
-            target.src = x_img;
+            target.src = '/sound-disabled.png';
             configurationSound.sound_enabled = false
             setChangedSound(false)
         }
@@ -117,7 +115,7 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
             let soundElem: any = document.querySelector('.configuration .sound-button img');
 
             setSoundEnabled(true);
-            soundElem.src = ok_img;
+            soundElem.src = '/sound-enabled.png';
         }
 
         setTimeToAnswer(configuration.time_to_answer);
@@ -133,40 +131,40 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
         setOnyomi('');
     }
     //ADICIONAR NOVO KANJI
-    const addKanji = ():void => {
+    function addKanji(): void {
         let kanjis_copy: any = [...kanjis];
 
         let kanjiRepeated = kanjis.find((kanji: any) => kanji[0] == kanjiSymbol);
 
 
 
-        if(kanjiSymbol.length > 1){
-            setAlertMessage('Digite apenas um caractere no campo "Simbolo do Kanji')
+        if (kanjiSymbol.length > 1) {
+            setAlertMessage('Digite apenas um caractere no campo "Simbolo do Kanji');
             playSound('error');
-            return
+            return;
         }
-        if(!kanjiSymbol || !kanjiMeaning){
-            setAlertMessage('Os campos "Simbolo do kanji" e "Significado(s) do kanji" não podem estar vazios"')
+        if (!kanjiSymbol || !kanjiMeaning) {
+            setAlertMessage('Os campos "Simbolo do kanji" e "Significado(s) do kanji" não podem estar vazios"');
             playSound('error');
-            return
+            return;
         }
-        if(!kunyomi && !onyomi){
-            setAlertMessage('Preencha pelo menos um dos campos: "Leitura Kunyomi" ou "Leitura Onyomi"')
+        if (!kunyomi && !onyomi) {
+            setAlertMessage('Preencha pelo menos um dos campos: "Leitura Kunyomi" ou "Leitura Onyomi"');
             playSound('error');
-            return
+            return;
         }
-        if(kanjiRepeated){
+        if (kanjiRepeated) {
             setAlertMessage('O kanji digitado já existe');
             playSound('error');
-            return
+            return;
         }
 
         setAddingNewKaji(false);
         resetInputs();
 
-        kanjis_copy.push([kanjiSymbol,kanjiMeaning,{kunyomi:kunyomi, onyomi: onyomi}])
+        kanjis_copy.push([kanjiSymbol, kanjiMeaning, { kunyomi: kunyomi, onyomi: onyomi }]);
         setKanjis(kanjis_copy);
-        playSound('confirm')
+        playSound('confirm');
     }
     const openEditKanjiMenu = ({innerHTML}: any): void => {
         setEditingKanji(true);
@@ -486,7 +484,7 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                 {h_k_alertMsg && <label className='h-k-alert-message'>{h_k_alertMsg}</label>}
                 
                 <div className='sound-button' onClick={({target}) => switchSound(target)}>
-                    <img src={x_img} alt="sound button" />
+                    <img src='/sound-disabled.png' alt="sound button" />
                 </div>
 
                 <section>

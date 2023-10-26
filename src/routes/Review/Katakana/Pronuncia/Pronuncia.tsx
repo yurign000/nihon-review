@@ -15,7 +15,6 @@ export default function Pronuncia(){
     const [reset, setReset]:                   [boolean, any] = useState(false);
     const [gameOver, setGameOver]:             [boolean, any] = useState(false);
     const [newReview, setNewReview]:           [boolean, any] = useState(false);
-    const [info, setInfo]:                     [string, any] = useState('');
     
     var interval: number;
 
@@ -110,14 +109,12 @@ export default function Pronuncia(){
             setQuestion(questions[questionNumber+1][0])
             setTimer(-1);
             setAnswer('?');
-            setInfo('');
         }
         
         //FIM DAS PERGUNTAS
         else{
             setGameOver(true)
             setQuestion('');
-            setInfo('');
             setAnswer('');
             setQuestion([]);
             setQuestions([]);
@@ -128,7 +125,6 @@ export default function Pronuncia(){
     const showAnswer = (): void => {
         if(configuration.show_info_on_game){
             setAnswer(questions[questionNumber][1]);
-            setInfo(questions[questionNumber][3]);
         }
         else{
             setAnswer(questions[questionNumber][1]);
@@ -157,7 +153,6 @@ export default function Pronuncia(){
                     <hr />
                     <div className="flex">
                         <label>{answer}</label>
-                        <label className="details">{info != '' ? '(' + info + ')' : ''}</label>
                     </div></>
                     
                 ) : (
