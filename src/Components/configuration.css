@@ -146,6 +146,7 @@ body:not(.mobile) .configuration .forward:hover{
     flex-direction: column;
     padding-top: calc(var(--base-width) / 40);
     gap: calc(var(--base-width) / 70);
+    height: 100%;
 }
 .configuration .basic-screen div{
     display: flex;
@@ -235,6 +236,9 @@ input::-webkit-inner-spin-button {
     box-shadow: 0 0 5px inset #00723d;
     border-radius: calc(var(--base-width) / 90);
 }
+.configuration .kanji-screen{
+    position: relative;
+}
 
 .configuration .kanji-screen h3 span{
     position: absolute;
@@ -286,6 +290,17 @@ body:not(.mobile) .configuration .kanji-screen label:hover{
     cursor: pointer;
     padding-bottom: 15%;
     box-sizing: border-box;
+}
+.configuration .kanji-screen ins{
+    position: absolute;
+    cursor: pointer;
+    background-image: url(../assets/jump-to-last.png);
+    background-size: 100%;
+    width: calc(var(--base-width) / 17);
+    height: calc(var(--base-width) / 17);
+    filter: drop-shadow(0 1px #fff) drop-shadow(0 2px 0px #888);
+    top: 0;
+    right: 0;
 }
 .configuration .add-kanji-menu{
     position: absolute;
@@ -344,6 +359,7 @@ body:not(.mobile) .configuration .add-kanji-menu div button:hover{
     justify-content: center;
     flex-direction: column;
     gap: 4px;
+    user-select: none;
 }
 .configuration .export-screen button{
     width: 70%;
@@ -472,7 +488,6 @@ body:not(.mobile) .configuration .export-screen button:hover{
         --screen-width: 150px;
     }
 }
-
-  
-  
-  
+button{
+    user-select: none;
+}

@@ -119,11 +119,8 @@ export default function Root(){
         if(!isOnMobile) return <></>
 
         if(!isFullScreen) return (
-            <div 
-                className="portrait-screen-alert" 
-                onClick={() => enterFullScreen()}
-            >
-                <button>
+            <div className="portrait-screen-alert">
+                <button onClick={() => enterFullScreen()}>
                     Abrir em Tela Cheia
                 </button>
             </div>

@@ -5,7 +5,8 @@
     color: #000;
     user-select: none;
 }
-html, body, html, #root{
+
+html, body, #root{
     background-color: #9CBCE2;
     margin: 0;
     padding: 0;

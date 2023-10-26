@@ -27,6 +27,7 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
     const [h_k_alertMsg, setH_k_setAlertMsg]:      [string, any] = useState('');
     const [answerRestDelay, setAnswerRestDelay]:   [string, any] = useState('');
     const [changedSound, setChangedSound]:         [boolean, any] = useState(false);
+    const [scrollPosition, setScrollPosition]:     [number, any] = useState(0);
 
     var removeCounting = 0;
 
@@ -56,19 +57,35 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
     }, [changedSound])
     // NAVEGAR ENTRE AS PÁGINAS
     const alternateIntoOptions = (direction: number): void => {
-        const screenOptions: any = document.querySelector('.configuration section');
-        const screenWidth: number = screenOptions.scrollWidth / screenOptions.children.length
+        const pages: any = document.querySelectorAll('main section .pages');
+        const slideWidth = pages[0].scrollWidth;
+
+        if(direction == -1 && scrollPosition <= 0) return;
+        if(direction == 1 && scrollPosition >= slideWidth * (pages.length-1)) return;
         
-        screenOptions.scrollLeft += screenWidth * direction;
-        
-        if(screenOptions.scrollLeft + 5 > screenOptions.scrollWidth - screenWidth){
-            screenOptions.scrollLeft = screenOptions.scrollWidth;
-        }
+        const tempScrollPosition = slideWidth * direction + scrollPosition;
+        setScrollPosition(slideWidth * direction + scrollPosition);
+
+        pages.forEach((f: any) => {
+            f.style.transform = `translate(-${tempScrollPosition}px)`
+        })
 
         playSound('click');
     }
+    const jumpToLastKanjiPage = (): void => {
+        const pages: any = document.querySelectorAll('main section .pages');
+        const slideWidth = pages[0].scrollWidth;
+
+        setScrollPosition(slideWidth * (pages.length-2));
+        pages.forEach((f: any) => {
+            f.style.transform = `translate(-${slideWidth * (pages.length-2)}px)`
+
+        })
+        playSound('change-page');
+    }
     //CARREGAR KANJIS, VERIFICAR TEMA, HABILITAR CHECKBOXS
     useEffect(() => {
+        document.querySelector('.configuration .body > section')?.setAttribute('tabindex', '-1')
         if(localStorage.configuration){
             setConfiguration(JSON.parse(localStorage.configuration));
         }
@@ -166,8 +183,30 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
         setKanjis(kanjis_copy);
         playSound('confirm');
     }
+    const openAddKanjiMenu = (): void => {
+        setAddingNewKaji(true);
+        playSound('click2');
+
+        setTimeout(() => {
+            let firstInput: any = document.getElementById('add-first-input');
+            firstInput?.focus();
+        }, 200);
+    }
     const openEditKanjiMenu = ({innerHTML}: any): void => {
         setEditingKanji(true);
+
+        playSound('click2');
+        setTimeout(() => {
+            let firstInput: any = document.getElementById('edit-first-input');
+            firstInput?.focus();
+
+
+            firstInput.addEventListener('blur', function() {
+            
+                setTimeout(function() {
+                }, 300); // Ajuste o tempo de espera conforme necessário
+            });
+        }, 200);
 
         let kanji: any = kanjis.find((k): any => k[0] == innerHTML);
         
@@ -250,11 +289,12 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
         //CRIAR UMA PAGINA COM ATÉ 32 KANJIS
         const updateElements_formated = (): void => {
             elements_formated.push(
-                <div key={elements_formated.length} className='kanji-screen pages'>
+                <div key={elements_formated.length} className='kanji-screen pages' onKeyDown={(event: any) => disableTabKey(event)}>
                     <h3>Kanji <span>({kanjis.length})</span></h3>
                     <article>
                         {...elements_parts}
                     </article>
+                    <ins onClick={() => jumpToLastKanjiPage()}></ins>
                 </div>
             );
         }
@@ -273,7 +313,7 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                     onMouseOver={({target}) => getInfoToTitle(target)} 
                     title={hoverKTitle}
                     key={key} 
-                    onClick={({target}: any) => {openEditKanjiMenu(target); playSound('click2')}}>
+                    onClick={({target}: any) => openEditKanjiMenu(target)}>
                         {kanji[0]}
                 </label> 
             )
@@ -296,21 +336,21 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
 
             if(labels.length < 32){   
                 elements_formated[elements_formated.length-1] = (
-                    <div className='kanji-screen pages' key={elements_formated.length-1}>
+                    <div className='kanji-screen pages' key={elements_formated.length-1} onKeyDown={(event: any) => disableTabKey(event)}>
                         <h3>Kanji <span>({kanjis.length})</span></h3>
                         <article>
                             {...labels}
-                            <label className='add-kanji'><span onClick={() => { setAddingNewKaji(true); playSound('click2') }}>+</span></label>
+                            <label className='add-kanji'><span onClick={() => openAddKanjiMenu()}>+</span></label>
                         </article>
                     </div>
                 );
             }
             else{
                 elements_formated.push(
-                    <div className='kanji-screen pages' key={elements_formated.length}>
+                    <div className='kanji-screen pages' key={elements_formated.length} onKeyDown={(event: any) => disableTabKey(event)}>
                         <h3>Kanji <span>({kanjis.length})</span></h3>
                         <article>
-                            <label className='add-kanji'><span onClick={() => { addKanji(); playSound('click2')}}>+</span></label>
+                            <label className='add-kanji'><span onClick={() => openAddKanjiMenu()}>+</span></label>
                         </article>
                     </div>
                 );
@@ -348,8 +388,6 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
     }
     const saveConfiguration = () => {
         let configurationCopy: any = {...configuration};
-
-        console.log(soundEnabled)
 
         configurationCopy.sound_enabled = soundEnabled;
         configurationCopy.kanji.kanji_list = kanjis;
@@ -407,6 +445,13 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                 setConfiguration(JSON.parse(localStorage.configuration));
                 stopResetConfiguration(target);
                 playSound('remove')
+
+                const pages: any = document.querySelectorAll('main section .pages');
+                setScrollPosition(0);
+                
+                pages.forEach((f: any) => {
+                    f.style.transform = `translate(0px)`
+                })
             }
         },1000)
 
@@ -448,8 +493,15 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
     }
     const awaitExportingImportingKanjis = (): void => {
         setTimeout(() => {
-            alternateIntoOptions(1);
-        }, 100);
+            const pages: any = document.querySelectorAll('main section .pages');
+            const slideWidth = pages[0].scrollWidth;
+    
+            setScrollPosition(slideWidth * (pages.length-1));
+            pages.forEach((f: any) => {
+                f.style.transform = `translate(-${slideWidth * (pages.length-1)}px)`
+    
+            })
+        }, 500);
     }
 
     const importKanjis = (target: any): void => {
@@ -462,6 +514,7 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                 
                 setKanjis(JSON.parse(content));
                 playSound('confirm');
+                alternateIntoOptions(-1)
             };
 
             reader.readAsText(file);
@@ -477,7 +530,7 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
     }
     
     return (
-        <div className='configuration' onKeyDown={(event: any) => disableTabKey(event)}>
+        <div className='configuration'>
             <div className='black_grid'></div>
             
             <main onMouseDown={() => setH_k_setAlertMsg('')} className='body'>
@@ -490,7 +543,7 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                 <section>
                         <div className='geral-screen pages'>
                             <h3>Geral</h3>
-                            <main className='basic-screen pages'>
+                            <main className='basic-screen'>
                                 <div>
                                     <label 
                                         className='have-info' 
@@ -525,19 +578,20 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                                         type="number" 
                                         value={questionsAtTime} 
                                         onChange={({target}): any => setQuestionsAtTime(formateInputs(target.value))}
+                                        onKeyDown={(event: any) => disableTabKey(event)}
                                     />
                                 </div>
                                 <div>
                                     <label 
                                         className='have-info' 
-                                        title='Mostrar dakuten e handakuten'>
-                                            Mostrar mais informações na resposta?
+                                        title='Mostrar se é kunten, dakuten ou handakuten'>
+                                            Mostrar tipo de hiragana/katakana?
                                         </label>
                                     <i onClick={() => {setShowMoreInfo(!showMoreInfo); playSound('check')}}>{showMoreInfo ? 'SIM' : 'NÃO'}</i>
                                 </div>
                             </main>
                         </div>
-                        <div className='hiragana-screen pages'>
+                        <div className='hiragana-screen pages' onKeyDown={(event: any) => disableTabKey(event)}>
                             <h3>Hiragana</h3>
                             <article onClick={({target}: any) => updateHCheckbox(target)}>
                                 <div>
@@ -606,7 +660,7 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                                 </div>
                             </article>
                         </div>
-                        <div className='katakana-screen pages'>
+                        <div className='katakana-screen pages' onKeyDown={(event: any) => disableTabKey(event)}>
                             <h3>Katakana</h3>
                             <article onClick={({target}: any) => updateKCheckbox(target)}>
                                 <div>
@@ -679,7 +733,8 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                         <div className='export-screen pages'>
                             <button 
                                 onMouseOver={() => playSound('click')}
-                                onClick={() => exportKanjis()}>
+                                onClick={() => exportKanjis()}
+                                >
                                     Exportar Kanjis
                             </button>
                             <button 
@@ -711,12 +766,14 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                     alt="salvar" 
                     className='salvar' 
                     onClick={() => saveConfiguration()}
+                    onContextMenu={(e: any) => e.preventDefault()}
                 />
                 <img 
                     src={cancelar} 
                     alt="cancelar" 
                     className='cancelar' 
                     onClick={() => {setShowConfiguration(false); playSound('cancel')}}
+                    onContextMenu={(e: any) => e.preventDefault()}
                 />
 
                 <img 
@@ -724,18 +781,29 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                     alt="backward" 
                     className='backward' 
                     onClick={ () => alternateIntoOptions(-1)}
+                    onContextMenu={(e: any) => e.preventDefault()}
                 />
                 <img 
                     src={return_img} 
                     alt="forward" 
                     className='forward' 
                     onClick={() => alternateIntoOptions(1)}
+                    onContextMenu={(e: any) => e.preventDefault()}
                 />
 
                 {addingNewKaji && (
-                    <div className='add-kanji-menu' onFocus={() => setAlertMessage('')} onContextMenu={(e: any) => e.preventDefault()}>
+                    <form 
+                        onSubmit={(event: any) => {addKanji(); event.preventDefault()}}
+                        className='add-kanji-menu' 
+                        onFocus={() => setAlertMessage('')} 
+                        onContextMenu={(e: any) => e.preventDefault()}>
                         <p>Simbolo do kanji:</p>
-                        <input type="text" placeholder='学' onChange={({target}) => setKanjiSymbol(target.value)}/>
+                        <input 
+                            id='add-first-input'
+                            type="text" 
+                            placeholder='学' 
+                            onChange={({target}) => setKanjiSymbol(target.value)}
+                        />
 
                         <p>Significado(s) do kanji:</p>
                         <input 
@@ -753,16 +821,21 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                         {alertMessage && <label className='alert-message'>{alertMessage}</label>}
 
                         <div>
-                            <button onClick={() => addKanji()}>ADICIONAR</button>
-                            <button onClick={() => {setAddingNewKaji(false); playSound('cancel'); resetInputs()}}>CANCELAR</button>
+                            <button type='submit'>ADICIONAR</button>
+                            <button onClick={() => {setAddingNewKaji(false); playSound('cancel'); resetInputs()}} type='button'>CANCELAR</button>
                         </div>                   
-                    </div>
+                    </form>
                 )}
                 {editingKanji && (
-                    <div className='add-kanji-menu' onFocus={() => setAlertMessage('')} onContextMenu={(e: any) => e.preventDefault()}>
+                    <form 
+                        onSubmit={(event: any) => {editKanji(); event.preventDefault()}}
+                        className='add-kanji-menu' 
+                        onFocus={() => setAlertMessage('')} 
+                        onContextMenu={(e: any) => e.preventDefault()}>
                         <p>Simbolo do kanji:</p>
                         <input 
                             type="text" 
+                            id='edit-first-input'
                             placeholder='学' 
                             value={kanjiSymbol} 
                             onChange={({target}) => setKanjiSymbol(target.value)}
@@ -795,8 +868,8 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                         {alertMessage && <label className='alert-message'>{alertMessage}</label>}
 
                         <div>
-                            <button onClick={() => editKanji()}>EDITAR</button>
-                            <button onClick={() => {setEditingKanji(false); playSound('cancel');resetInputs()}}>CANCELAR</button>
+                            <button type='submit'>EDITAR</button>
+                            <button onClick={() => {setEditingKanji(false); playSound('cancel');resetInputs()}} type='button'>CANCELAR</button>
                             <button 
                                 className='remove-button'
                                 onMouseUp={() => stopRemovingKanji()} 
@@ -805,10 +878,11 @@ export default function Configuration({setShowConfiguration, setIsFullScreen}: a
                                 onTouchMove={() => stopRemovingKanji()} 
                                 onMouseDown={() => removeKanji()}
                                 onTouchStart={() => removeKanji()}
+                                type='button'
                             >REMOVER</button>
                             
                         </div>                   
-                    </div>
+                    </form>
                 )}
             </main>
         </div>
