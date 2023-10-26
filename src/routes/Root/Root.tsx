@@ -54,16 +54,6 @@ export default function Root(){
         await orientation.lock('landscape');
         setIsFullScreen(true);
     }
-
-    const exitFullScreen = async () => {
-        let body: any = document.body;
-        let orientation: any = screen.orientation;
-        
-        body.exitFullScreen();
-        await orientation.unlock();
-        setIsFullScreen(false);
-    }
-
      
     //VERIFICAR SE A URL FOI ALTERADA
     useEffect(() => {
@@ -144,7 +134,7 @@ export default function Root(){
 
     return(
         <div className="router" style={getTheme}>
-            {/* {mobileAndNotFullscreenBlock()} */}
+            {mobileAndNotFullscreenBlock()}
 
             <a className="config" onClick={() => { setShowConfiguration(true); playSound('pause') }}>
                 <img src={config} alt="configuration" style={getTheme}/>
