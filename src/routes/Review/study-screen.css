@@ -38,9 +38,11 @@
 .study-screen section label{
     font-size: 6.5vw;
     text-align: center;
+    z-index: 10;
 }
 .study-screen section .details{
     font-size: 120%;
+    z-index: 10;
 } 
 .study-screen hr{
     height: 10px;

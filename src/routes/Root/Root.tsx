@@ -1,33 +1,39 @@
 import "./root.css";
 import { Outlet } from "react-router-dom";
-import config from '../../assets/config.png'
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import ConfigurationMenu from "../../Components/ConfigurationMenu";
+import { defaultConfiguration, Configuration } from "../../scripts/defaultConfiguration";
+
+// ASSETS
 import cloud from '../../assets/cloud.png'
 import cloud_inverted from '../../assets/cloud-inverted.png'
-import { defaultConfiguration } from "./defaultConfiguration";
-import Configuration from "../../Components/Configuration";
-import playSound from "../../manageSounds";
+import config_icon from '../../assets/config.png'
+import playSound from "../../scripts/manageSounds";
 
 export default function Root(){
-    const [changeTheme, setChangeTheme]: [boolean, any] = useState(false);
-    const [changedURL, setChangedURL]: [boolean, any] = useState(false);
-    const [showConfiguration, setShowConfiguration]: [boolean, any] = useState(false);
-    const [isOnMobile, setIsOnMobile]: [boolean, any] = useState(false);
-    const [isFullScreen, setIsFullScreen]: [boolean, any] = useState(false);
+    // VERIFICAR SE JA EXISTE CONFIGURAÇÕES SALVAS NO localStorage
+    function localConfiguration(): Configuration | null{
+        if(localStorage.configuration) 
+            return JSON.parse(localStorage.configuration);
 
-    
-    var changedUrlTrue: boolean = false;
-    var configuration: any = JSON.parse(localStorage.configuration || JSON.stringify(defaultConfiguration));
+        return null
+    }
 
-    //VERIFICAR SE O TEMA FOI MODIFICADO | CRIAR configuration NO localStorage CASO NÃO EXISTA AINDA
+    const [changedURL, setChangedURL] =               useState<boolean>(false);
+    const [showConfiguration, setShowConfiguration] = useState<boolean>(false);
+    const [isOnMobile, setIsOnMobile] =               useState<boolean>(false);
+    const [isFullScreen, setIsFullScreen] =           useState<boolean>(false);
+    const [configuration, setConfiguration] =         useState<Configuration>(localConfiguration() || defaultConfiguration);
+
+    const cloud1 = useRef<HTMLImageElement>(null);
+    const cloud2 = useRef<HTMLImageElement>(null);
+    const config = useRef<HTMLAnchorElement>(null);
+    const portraitAlert = useRef<HTMLDivElement>(null);
+
+    // ATUALIZAR localStorage SEMPRE QUE AS CONFIGURAÇÕES FOREM MODIFICADAS
     useEffect(() => {
-        if(localStorage.configuration){
-            configuration = JSON.parse(localStorage.configuration);
-        }
-        else localStorage.configuration = JSON.stringify(configuration);
-
-        
-    },[changeTheme])
+        localStorage.configuration = JSON.stringify(configuration);
+    }, [configuration])
 
     //GERENCIAR LAYOUT PARA CELULAR
     useEffect(() => {
@@ -36,16 +42,42 @@ export default function Root(){
             setIsOnMobile(true);
 
             document.body.classList.add("mobile");
-            document.addEventListener('fullscreenchange', onExitFullScreenByReturnButton, false)
+            document.addEventListener('fullscreenchange', onExitFullScreen, false)
         }
-
     }, [])
-    function onExitFullScreenByReturnButton() {
+
+    //MOVER AS NUVENS AO TROCAR DE PÁGINA
+    useEffect(() => {
+        if(changedURL){            
+            cloud1.current?.classList.add('cloud1-translate');
+            cloud2.current?.classList.add('cloud2-translate');
+            
+            setTimeout(() => {
+                cloud1.current?.classList.remove('cloud1-translate');
+                cloud2.current?.classList.remove('cloud2-translate');
+                
+                setChangedURL(false);
+            }, 500);
+        }
+    },[changedURL])
+
+    //DESATIVAR BOTÃO DE CONFIGURAÇÕES NA TELA DE REVISÃO
+    useEffect(() => {
+        let url = window.location.pathname;
+
+        if(url.includes('pronuncia') || url.includes('escrita') || url.includes('significado')){
+            config.current?.classList.add('disabled');
+        }
+        else config.current?.classList.remove('disabled');
+    },[changedURL])
+    
+    function onExitFullScreen() {
         if(document.fullscreenElement == null){
             setIsFullScreen(false);
         } 
-
     }
+
+    // ABRIR TELA CHEIA E GIRAR TELA PARA O MODO PAISAGEM
     const enterFullScreen = async () => {
         let body: any = document.body;
         let orientation: any = screen.orientation;
@@ -54,60 +86,14 @@ export default function Root(){
         await orientation.lock('landscape');
         setIsFullScreen(true);
     }
-     
-    //VERIFICAR SE A URL FOI ALTERADA
-    useEffect(() => {
-        if(!changedUrlTrue) cloudMove();
-        
-        changedUrlTrue = false;
-    },[changedURL])
-
-    //MOVER AS NUVENS AO TROCAR DE PÁGINA
-    const cloudMove = () => {
-        if(changedURL){
-            const cloud1: any = document.getElementsByClassName('c1')[0];
-            const cloud2: any = document.getElementsByClassName('c2')[0];
-
-            cloud1.style.animationName = 'clouds_move1';
-            cloud1.style.animationDuration = '0.5s';
-            cloud2.style.animationTimingFunction = 'linear';
-            cloud2.style.animationName = 'clouds_move2';
-            cloud2.style.animationDuration = '0.5s';
-            cloud2.style.animationDirection = 'normal';
-            cloud2.style.animationTimingFunction = 'linear';
-            setTimeout(() => {
-                cloud1.style.animationName = 'clouds';
-                cloud1.style.animationDuration = '4s';
-                cloud1.style.animationTimingFunction = 'cubic-bezier(0.455, 0.03, 0.515, 0.955)';
-                cloud2.style.animationName = 'clouds';
-                cloud2.style.animationDuration = '4s';
-                cloud2.style.animationDirection = 'reverse';
-                cloud2.style.animationTimingFunction = 'ease';
-                setChangedURL(false);
-            }, 500);
-            changedUrlTrue = true;
-            
-        }
-    }
-
-    //DESATIVAR BOTÃO DE CONFIGURAÇÕES NA TELA DE REVISÃO
-    useEffect(() => {
-        let url = window.location.pathname;
-        let config: any = document.querySelector('.config');
-
-        if(url.includes('pronuncia') || url.includes('escrita') || url.includes('significado')){
-            config.style.opacity = '20%'
-            config.style.pointerEvents = 'none';
-        }
-        else{
-            config.style.opacity = '100%'
-            config.style.pointerEvents = 'initial';
-        }
-    })
     
     //ESTILOS PARA CADA TEMA DO SITE
-    const dark: object = { filter: 'invert() hue-rotate(90deg) sepia(60%) brightness(80%)'}
-    const white: object = { filter: '' }
+    const dark: object = { 
+        filter: 'invert() hue-rotate(90deg) sepia(60%) brightness(80%)'
+    }
+    const white: object = { 
+        filter: '' 
+    }
     
     //OBTER TEMA ATUAL
     const handleTheme = (): React.CSSProperties => {
@@ -115,34 +101,64 @@ export default function Root(){
     }
     const getTheme = handleTheme();
 
-    const mobileAndNotFullscreenBlock = (): JSX.Element | undefined => {
-        if(!isOnMobile) return <></>
+    // BLOQUEIO DE TELA QUANDO CELULAR NÃO ESTIVER FULLSCREEN
+    const notFullscreenBlock = (): JSX.Element | undefined => {
+        if(!isOnMobile || isFullScreen) return <></>
 
-        if(!isFullScreen) return (
-            <div className="portrait-screen-alert">
+        else return (
+            <div className="portrait-screen-alert flex-center" ref={portraitAlert}>
                 <button onClick={() => enterFullScreen()}>
                     Abrir em Tela Cheia
                 </button>
             </div>
         )
+    }
 
-        else return <></>
+    const openConfiguration = (): void => {
+        setShowConfiguration(true); 
+        playSound('pause');
     }
 
     return(
         <div className="router" style={getTheme}>
-            {mobileAndNotFullscreenBlock()}
+            
+            {notFullscreenBlock()}
 
-            <a className="config" onClick={() => { setShowConfiguration(true); playSound('pause') }}>
-                <img src={config} alt="configuration" style={getTheme}/>
+            <a className="config" ref={config} onClick={() => openConfiguration()}>
+                <img src={config_icon} alt="configuration" style={getTheme}/>
             </a>
 
-            {showConfiguration && <Configuration setShowConfiguration={setShowConfiguration} setIsFullScreen={setIsFullScreen}/>}
+            { 
+                showConfiguration &&
+                <ConfigurationMenu 
+                    setShowConfiguration={setShowConfiguration} 
+                    setIsFullScreen={setIsFullScreen} 
+                    configuration={configuration} 
+                    setConfiguration={setConfiguration}
+                    portraitAlert={portraitAlert}
+                />
+            }
 
-            <img src={cloud} className='cloud c1' alt="" style={getTheme}/>
-            <img src={cloud_inverted} className='cloud c2' alt="" style={getTheme}/>
+            <img 
+                src={cloud} 
+                className='cloud c1' 
+                ref={cloud1} 
+                style={getTheme}
+            />
+            <img 
+                src={cloud_inverted} 
+                className='cloud c2' 
+                ref={cloud2} 
+                style={getTheme}
+            />
 
-            <Outlet context={[changeTheme,setChangeTheme, setChangedURL, isFullScreen, setIsFullScreen]}/>
+            <Outlet context={{
+                setChangedURL, 
+                setIsFullScreen,
+                setConfiguration,
+                isFullScreen, 
+                configuration,
+            }}/>
         </div>
     )
 }

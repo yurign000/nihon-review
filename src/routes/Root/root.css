@@ -1,3 +1,4 @@
+/* ANIMAÇÃO PADRÃO DAS NUVENS QUANDO ESTÃO PARADAS */
 @keyframes clouds {
     0%{
         transform: translateY(0px);
@@ -10,6 +11,7 @@
     }
 }
 
+/* ANIMAÇÕES DAS NUVENS SE MOVENDO AO IR PARA OUTRA PAGINA */
 @keyframes clouds_move1 {
     35%{
         transform: translateX(-100%);
@@ -50,6 +52,7 @@
     transition: 0.5s;
 }
 
+/* ESTILO DO MENU DE CONFIGURAÇÕES */
 .router .config{
     z-index: 2;
     background-color: transparent;
@@ -65,29 +68,40 @@
 .router .config:hover{
     transform: rotate(10deg);
 }
-.router .c1{
+.router .config.disabled{
+    opacity: 20%;
+    pointer-events: none;
+}
+
+/* ESTILO DAS NUVENS */
+.cloud{
+    position: absolute;
+    height: 30%;
     animation-name: clouds;
     animation-duration: 4s;
     animation-iteration-count: infinite;
+}
+.router .c1{
     animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
     top: 10%;
 }
 .router .c2{
-    animation-name: clouds;
-    animation-duration: 4s;
-    animation-iteration-count: infinite;
-    animation-direction: reverse;
     top: 1%;
     right: -5%;
 }
-.cloud{
-    position: absolute;
-    height: 30%;
+.cloud1-translate{
+    animation-name: clouds_move1;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
 }
+.cloud2-translate{
+    animation-name: clouds_move2;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+}
+
+/* TELA DE BLOQUEIO NO CELULAR PARA TRAVAR O SITE CASO NÃO ESTEJA EM FULLSCREEN */
 .portrait-screen-alert{
-    display: flex;
-    align-items: center;
-    justify-content: center;
     top: 0;
     right: 0;
     position: fixed;
@@ -109,8 +123,4 @@
     color: #fff;
     background-color: #0084db;
     text-shadow: 0 2px 3px #444;
-}
-
-*{   
-    -webkit-tap-highlight-color: transparent;
 }

@@ -1,9 +1,10 @@
+/* FONTE PADRÃO DO SITE */
 @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
-
 *{
     font-family: Itim, Arial, Helvetica, sans-serif;
     color: #000;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html, body, #root{
@@ -16,36 +17,4 @@ html, body, #root{
     position: absolute;
     top: 0;
     left: 0;
-}
-.flex{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.text-shadow{
-    text-shadow: 0 1px 2px #666;
-}
-.box-shadow{
-    box-shadow: 0 1px 2px #666;
-}
-
-/* EFEITO DE UNDERLINE ENCOLHENDO */
-.text-hover{
-    display: flex;
-    height: max-content;
-    width: max-content;
-    flex-direction: column;
-    align-items: center;
-}
-.text-hover i{
-    height: 2px;
-    width: 100%;
-    transition: 0.2s;
-    background-color: #000;
-}
-.text-hover:hover i{
-    width: 85%;
-}
-a{
-    text-decoration: none;
 }

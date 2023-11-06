@@ -1,3 +1,4 @@
+/* BRILHO DO KANJI 日本学 */
 @keyframes logo {
     0%{
         filter: none;
@@ -12,6 +13,8 @@
         filter: none;
     }
 }
+
+/* ANIMAÇÃO AO CLICAR NO NINJA */
 @keyframes ninja {
     0%{
         transform: rotate(0);
@@ -57,9 +60,10 @@
     background-position: 100% 100%;
     background-size: 100% 120%;
 }
+
+/* KANJI 日本学 NA PAGINA */
 .main-page .title{
     position: relative;
-    flex-direction: column;
     height: 70%;
 }
 .main-page .title .logo{
@@ -72,15 +76,20 @@
     animation-iteration-count: infinite;
     transition: 0.5s;
 }
+
 .main-page .title .ninja{
     position: absolute;
     height: 90%;
+    transition: 0.5s;
+}
+.ninja.ninjaAnimation{
     animation-duration: 0.2s;
     animation-play-state: running;
     animation-timing-function: linear;
-    transition: 0.5s;
+    animation-name: ninja !important;
 }
 
+/* LINKS */
 .main-page .options{
     height: 30%;
     text-align: center;

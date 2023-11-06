@@ -1,51 +1,64 @@
 import './main-page.css';
-import ninja from '../../assets/ninja.png'
+import ninjaIcon from '../../assets/ninja.png'
 import logo from  '../../assets/logo.png'
 import { useOutletContext } from "react-router-dom";
 import { Link } from 'react-router-dom';
-import playSound from '../../manageSounds';
+import playSound from '../../scripts/manageSounds';
+import { useEffect, useRef, useState } from 'react';
+import RootContext from '../../scripts/RootContext';
 
 export default function MainPage(){
-    var themeCounter: number = 5 //CONTADOR ATÉ MUDAR O TEMA
-    const [changeTheme,setChangeTheme, setChangedURL]: [boolean, any, any] = useOutletContext()  //ESTADO OBTIDO DO root.jsx
-    var configuration: any = JSON.parse(localStorage.configuration || '{}'); //OBTER OU NÃO configuration DO localStorage
+    //ESTADOS OBTIDO DO root.tsx
+    const {
+        configuration, 
+        setConfiguration, 
+        setChangedURL
+    }: RootContext = useOutletContext() 
+    
+    //QUANTIDADE DE VEZES QUE SE DEVE CLICAR NO NINJA PARA MUDAR DE TEMA
+    const [themeCounter, setThemeCounter] = useState<number>(5) 
+    const ninja = useRef<HTMLImageElement>(null);
 
     //ANIMAÇÃO AO CLICAR NO NINJA
-    const ninjaAnimation = (ninja: any): void => {
-        if(ninja.style.animationName != 'ninja'){
-            themeCounter--;
-                
-            ninja.style.animationName = "ninja";
+    const ninjaAnimation = (): void => {
+        if(!ninja.current?.classList.contains('ninjaAnimation')){
+            setThemeCounter(themeCounter - 1);
             playSound('ninja-click')
-            setTimeout(() => ninja.style.animationName = "none", 200);
-        }
-        
-        //MUDAR TEMA AO CLICAR themeCounter VEZES NO NINJA
-        if(themeCounter == 0){
-            themeCounter = 5;
-            setChangedURL(true);
-            //MUDAR TEMA E ATUALIZAR localStorage
-            configuration = JSON.parse(localStorage.configuration);
-            configuration.theme = (configuration.theme == 'white') ? 'dark' : 'white'; 
-            localStorage.configuration = JSON.stringify(configuration);
 
-            setChangeTheme(!changeTheme)
-            playSound('change-page')
+            ninja.current?.classList.add("ninjaAnimation");
+            setTimeout((): void => 
+                ninja.current?.classList.remove('ninjaAnimation')
+            ,200);
         }
     }
+
+    //MUDAR DE TEMA AO CLICAR 5 VEZES NO NINJA
+    useEffect(() => {
+        if(themeCounter == 0){
+            setThemeCounter(5);
+            setChangedURL(true);
+
+            setConfiguration({
+                ...configuration, 
+                theme: (configuration.theme == 'white') ? 'dark' : 'white'
+            })
+
+            playSound('change-page')
+        }
+    }, [themeCounter])
 
     //ESTILOS PARA CADA TEMA DO SITE
     const dark_ninja:  object = { filter: 'brightness(0%)' };
-    const dark_logo:   object = { filter: 'brightness(100%) invert()' };
     const white_ninja: object = { filter: '' };
+    const dark_logo:   object = { filter: 'brightness(100%) invert()' };
     const white_logo:  object = { filter: '', animationName: 'logo', }
 
     //OBTER TEMA ATUAL
-    const handleLogoTheme = (): React.CSSProperties => {
-        return configuration?.theme == 'dark' ? dark_logo : white_logo;
-    }
     const handleNinjaTheme = (): React.CSSProperties => {
         return configuration?.theme == 'dark' ? dark_ninja : white_ninja;
+    }
+    const handleLogoTheme = (): React.CSSProperties => {
+        return configuration?.theme == 'dark' ? dark_logo : white_logo;
     }
     const getNinjaTheme = handleNinjaTheme()
     const getLogoTheme = handleLogoTheme()
@@ -58,31 +71,40 @@ export default function MainPage(){
     return(
         <div className='main-page'>
 
-            <section className='title flex'>
-                <img className='logo' src={logo} alt="logo" style={getLogoTheme}/>
-                <img className='ninja' src={ninja} alt="ninja" onClick={({target}) => ninjaAnimation(target)} style={getNinjaTheme}/>
+            <section className='title flex-center'>
+                <img 
+                    className='logo' 
+                    src={logo} 
+                    alt="logo" 
+                    style={getLogoTheme}
+                />
+                <img 
+                    className='ninja' 
+                    src={ninjaIcon} 
+                    alt="ninja" 
+                    ref={ninja}
+                    onClick={() => ninjaAnimation()} 
+                    style={getNinjaTheme}
+                />
             </section>
 
-            <section className='options flex'>
+            <section className='options flex-center'>
 
-                <div className='flex text-'>
+                <div className='flex-center'>
                     <Link className='text-hover' to='/review/hiragana' onClick={() => nextPage()}>
-                        <span className='text-shadow'>HIRAGANA</span>
-                        <i className='box-shadow'></i>
+                        HIRAGANA
                     </Link>
                 </div>
 
-                <div className='flex'>
+                <div className='flex-center'>
                     <Link className='text-hover' to='/review/katakana' onClick={() => nextPage()}>
-                        <span className='text-shadow'>KATAKANA</span>
-                        <i className='box-shadow'></i>
+                        KATAKANA
                     </Link>
                 </div>
 
-                <div className='flex'>
+                <div className='flex-center'>
                     <Link className='text-hover' to='/review/kanji' onClick={() => nextPage()}>
-                        <span className='text-shadow'>KANJI</span>
-                        <i className='box-shadow'></i>
+                        KANJI
                     </Link>
                 </div>
                 
