@@ -1,0 +1,31 @@
+.flex-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.flex-column{
+    display: flex;
+    flex-direction: column;
+}
+
+/* EFEITO DE UNDERLINE ENCOLHENDO AO PASSAR MOUSE POR CIMA DE UM LINK */
+.text-hover{
+    text-shadow: 0 1px 2px #666;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    color: #000;
+    font-size: 4vw;
+    text-decoration: none;
+}
+.text-hover:before{
+    content: '';
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    border-bottom: solid 2px;
+    transition: 0.2s;
+}
+.text-hover:hover::before{
+    width: 80%;
+}
