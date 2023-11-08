@@ -36,7 +36,7 @@
     flex-direction: column;
 }
 .study-screen section label{
-    font-size: 6.5vw;
+    font-size: 10vh;
     text-align: center;
     z-index: 10;
 }
