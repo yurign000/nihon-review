@@ -49,6 +49,7 @@
     background-color: #000000;
     border: none;
     width: 30%;
+    outline-offset: 4px;
 }
 .study-screen .refresh{
     height: 35%;

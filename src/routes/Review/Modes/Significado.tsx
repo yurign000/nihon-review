@@ -7,18 +7,29 @@ import { KanjiList } from "../../../scripts/data";
 import RootContext from "../../../scripts/RootContext";
 
 export default function Significado(){
+    //ESTADOS OBTIDO DO root.tsx
+    const {
+        configuration, 
+    }: RootContext= useOutletContext() 
+
     const [timer, setTimer] =                   useState<number>(0); 
+    const [answerRest, setAnswerRest] =         useState<number>(configuration.answer_rest_delay); 
     const [question, setQuestion] =             useState<string>('');
     const [answer, setAnswer] =                 useState<string>('');
     const [questions, setQuestions] =           useState<KanjiList[]>([]);
     const [questionNumber, setQuestionNumber] = useState<number>(0);
     const [reset, setReset] =                   useState<boolean>(false);
     const [gameOver, setGameOver] =             useState<boolean>(false);
+    const [paused, setPaused] =                 useState<boolean>(false);
+    
+    useEffect(() => {
+        const handlePaused = (e: KeyboardEvent): void => {
+            if(e.key == ' ') setPaused(prevPaused => !prevPaused);
+        }
+        document.addEventListener('keydown', handlePaused);
 
-    //ESTADOS OBTIDO DO root.tsx
-    const {
-        configuration, 
-    }: RootContext= useOutletContext() 
+        return () => document.removeEventListener('keydown', handlePaused);
+    }, [])
 
     useEffect(() => {
 
@@ -42,25 +53,35 @@ export default function Significado(){
     
     //COMEÇAR AS QUESTÕES
     useEffect(() => {
-        if(gameOver) setTimer(0)
-        if(JSON.stringify(questions) == '[]') return
-
-        // MOSTRAR RESPOSTA E MANTER ELA VISÍVEL POR ALGUNS SEGUNDOS ANTES DE IR PARA A PRÓXIMA QUESTÃO
-        if(timer == 0){
-            showAnswer();
-
-            setTimeout(() => {
-                updateQuestion();
-                setTimer(configuration.time_to_answer);               
-                
-            }, configuration.answer_rest_delay * 1000);   
-        }
+        if(gameOver) setTimer(0);
+        if(JSON.stringify(questions) == '[]') return;
+        if(paused) return;
  
         // REDUZIR TIMER EM 1 A CADA SEGUNDO
         if(timer > 0)
-            setTimeout(() => setTimer(timer - 1), 1000);
+            var tm = setTimeout(() => setTimer(timer - 1), 1000);
+
+        // MOSTRAR RESPOSTA E MANTER ELA VISÍVEL POR ALGUNS SEGUNDOS ANTES DE IR PARA A PRÓXIMA QUESTÃO
+        else{
+            showAnswer();
+            var delay = answerRest;
+            var itv = setInterval(() => {
+                if(delay == 0){
+                    setTimer(configuration.time_to_answer);
+                    setAnswerRest(configuration.answer_rest_delay);
+                    updateQuestion();
+                    clearInterval(itv);
+                }
+                else{
+                    delay--;
+                    setAnswerRest(delay);
+                }
+            }, 1000)
+        }
+
+        return () => {clearTimeout(tm); clearInterval(itv)};
     
-    },[timer])
+    },[timer, paused])
 
     // REALIZAR O REVIEW NOVAMENTE?
     const reviewAgain = (): void => {
@@ -97,6 +118,12 @@ export default function Significado(){
         setAnswer(questions[questionNumber][1]);
     }
 
+    const handlePaused = (key: string): void => {
+        if(key == ' '){
+            setPaused(!paused);
+        }
+    }
+
     return (
         <div className='study-screen flex-center'>
             <article className="flex-center">
@@ -117,7 +144,7 @@ export default function Significado(){
                         <div className="flex-center">
                             <label>{question}</label>
                         </div>
-                        <hr />
+                        <hr onClick={() => handlePaused(' ')} style={paused ? {outline: '3px solid #777'} : {outline: ''}}/>
                         <div className="flex-center">
                             <label>{answer}</label>
                         </div>
