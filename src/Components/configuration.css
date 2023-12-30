@@ -276,6 +276,9 @@ input::-webkit-inner-spin-button {
     width: calc(var(--screen-width) / 8);
     cursor: pointer;
 }
+.configuration .kanji-screen label.disabled{
+    opacity: 0.3;
+}
 body:not(.mobile) .configuration .kanji-screen label:hover{
     color: #00d9ff;
     transform: scale(1.1);

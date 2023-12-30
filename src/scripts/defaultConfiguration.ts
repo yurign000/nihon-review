@@ -17,7 +17,7 @@ export interface Configuration{
     };
     
     kanji: {
-        kanji_list: [string, string, {kunyomi: string, onyomi: string}][];
+        kanji_list: [string, string, {kunyomi: string, onyomi: string}, boolean?][];
     }
 }
 export const defaultConfiguration: Configuration = {

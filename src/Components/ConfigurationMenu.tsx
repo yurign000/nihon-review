@@ -222,9 +222,30 @@ export default function ConfigurationMenu(props: ConfigurationMenuProps){
 
                 labels.push(
                     <label 
+                        className={isKanjiEnabled(config_t.kanji.kanji_list[l][3]) ? '' : 'disabled'}
                         title={`${kanji[1]}\n${kanji[2]?.kunyomi}\n${kanji[2]?.onyomi}`}
                         key={l} 
                         onClick={({target}): void => openEditKanjiMenu(target as HTMLLabelElement)}
+                        onContextMenu={(e) => {
+                            if(e.target instanceof HTMLLabelElement){
+                                let symbol = e.target.innerHTML;
+                                let kanjis: KanjiList[] = [...config_t.kanji.kanji_list];
+                                let kanji: KanjiList = kanjis.find((k: KanjiList) => k[0] == symbol) as KanjiList
+    
+                                if(isKanjiEnabled(kanji[3])){
+                                    e.target.className = 'disabled';
+                                    kanji[3] = false;
+                                }
+                                else{
+                                    e.target.className = '';
+                                    kanji[3] = true;
+                                }
+                                kanjis[kanjis.indexOf(kanji)] = kanji;
+                                setConfig_t({...config_t, kanji: {kanji_list: kanjis}})
+                            }
+                            
+                            e.preventDefault()
+                        }}
                     >
                         {config_t.kanji.kanji_list[l][0]}
                     </label> 
@@ -424,6 +445,12 @@ export default function ConfigurationMenu(props: ConfigurationMenuProps){
 
         if(formatedValue > 999) formatedValue = 999
         return formatedValue;
+    }
+
+    const isKanjiEnabled = (kanjiState: boolean | undefined): boolean => {
+        if(kanjiState === undefined || kanjiState === true)
+            return true;
+        return false;
     }
 
     return (

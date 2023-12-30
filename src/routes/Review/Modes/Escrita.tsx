@@ -153,7 +153,7 @@ export default function Escrita(){
     const showAnswer = (): void => {
         if(configuration.show_info_on_game){
             setAnswer(questions[questionNumber][0]);
-            setInfo(questions[questionNumber][3]);
+            setInfo(String(questions[questionNumber][3]));
         }
         else{
             setAnswer(questions[questionNumber][0]);

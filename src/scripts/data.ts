@@ -1,4 +1,4 @@
-export type KanjiList = [string, string, {kunyomi: string, onyomi: string}];
+export type KanjiList = [string, string, {kunyomi: string, onyomi: string}, boolean?];
 export type Alphabets = (string[] & KanjiList)[];
 
 const hiragana: ReadonlyArray<Array<string>> = [
